@@ -1,0 +1,64 @@
+=== Dataset iris (train size 120, test size 30, 4, features count: 4)
+  D = 2
+    Univarié...         1.3s    gap 0.0%        Erreurs train/test 5/1
+    Multivarié...       0.9s    gap 0.0%        Erreurs train/test 1/0
+
+  D = 3
+    Univarié...         8.0s    gap 0.0%        Erreurs train/test 0/4
+    Multivarié...       0.8s    gap 0.0%        Erreurs train/test 0/2
+
+  D = 4
+    Univarié...         10.5s   gap 0.0%        Erreurs train/test 0/4
+    Multivarié...       4.2s    gap 0.0%        Erreurs train/test 0/1
+
+=== Dataset seeds (train size 168, test size 42, 6, features count: 6)
+  D = 2
+    Univarié...         12.4s   gap 0.0%        Erreurs train/test 10/2
+    Multivarié...       1.4s    gap 0.0%        Erreurs train/test 0/2
+
+  D = 3
+    Univarié...         30.2s   gap 3.7%        Erreurs train/test 6/2
+    Multivarié...       3.2s    gap 0.0%        Erreurs train/test 0/1
+
+  D = 4
+    Univarié...         30.5s   gap 7.7%        Erreurs train/test 11/2
+    Multivarié...       18.9s   gap 0.0%        Erreurs train/test 0/2
+
+=== Dataset wine (train size 142, test size 36, 13, features count: 13)
+  D = 2
+    Univarié...         14.5s   gap 0.0%        Erreurs train/test 5/2
+    Multivarié...       0.3s    gap 0.0%        Erreurs train/test 0/2
+
+  D = 3
+    Univarié...         27.1s   gap 0.0%        Erreurs train/test 0/2
+    Multivarié...       1.2s    gap 0.0%        Erreurs train/test 0/1
+
+  D = 4
+    Univarié...         18.9s   gap 0.0%        Erreurs train/test 0/1
+    Multivarié...       3.7s    gap 0.0%        Erreurs train/test 0/3
+
+=== Dataset ecoli (train size 261, test size 66, 7, features count: 7)
+  D = 2
+    Univarié...         30.1s   gap 6.6%        Erreurs train/test 42/15
+    Multivarié...       30.1s   gap 5.6%        Erreurs train/test 33/15
+
+  D = 3
+    Univarié...         30.4s   gap 28.6%       Erreurs train/test 58/20
+    Multivarié...       30.3s   gap 7.0%        Erreurs train/test 16/13
+
+  D = 4
+    Univarié...         31.1s   gap 54.4%       Erreurs train/test 83/26
+    Multivarié...       31.1s   gap 137.3%      Erreurs train/test 151/33
+
+=== Dataset prnn (train size 200, test size 50, 2, features count: 2)
+  D = 2
+    Univarié...         30.1s   gap 7.4%        Erreurs train/test 24/12
+    Multivarié...       30.1s   gap 10.5%       Erreurs train/test 19/7
+
+  D = 3
+    Univarié...         30.3s   gap 10.5%       Erreurs train/test 19/11
+    Multivarié...       30.5s   gap 13.0%       Erreurs train/test 22/5
+
+  D = 4
+    Univarié...         30.7s   gap 11.1%       Erreurs train/test 20/12
+    Multivarié...       30.6s   gap 22.7%       Erreurs train/test 35/6
