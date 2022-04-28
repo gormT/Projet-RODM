@@ -1,0 +1,107 @@
+\documentclass{article}
+
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{url}
+\usepackage{multirow}
+
+\usepackage{enumerate}
+
+\title{Rapport de RODD\\ TP n°6}
+
+\author{Antonio Tavares et Julien Dallot}
+
+\begin{document}
+\maketitle
+
+\textbf{1. Jeux de données}
+
+\begin{itemize}
+    \item \texttt{ecoli.txt} : 7 attributs par instance, 327 instances, 5 classes. La classe regroupant le nombre minimal d'instances en possède 20, le choix a été fait de supprimer les instances étant dans des classes de petites tailles ($\leq$ 5 instances par classe).
+    \item \texttt{prnn.txt} : 2 attributs par instance, 250 instances, 2 classes. Autant d'instances dans chaque classe (125).
+\end{itemize}
+
+Ces deux jeux de données proviennent du site \url{www.openml.org}.
+
+\vspace{2mm}
+
+\textbf{2. Résultats : \texttt{main()}}
+
+La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur les 5 jeux de données considérés sont les suivantes :
+
+
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 1.3s & 0.0\% & 5/1 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 0.9s & 0.0\% & 1/0 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 8.0s & 0.0\% & 0/4 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 0.8s & 0.0\% & 0/2 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 10.5s & 0.0\% & 0/4 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 4.2s & 0.0\% & 0/1 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{iris} (train size 120, test size 30, features count: 4)}
+    \label{tab_iris_main}
+\end{table}
+
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 12.4s & 0.0\% & 10/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 1.4s & 0.0\% & 0/2 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 30.2s & 3.7\% & 6/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 3.2s & 0.0\% & 0/1 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 30.5s & 7.7\% & 11/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 18.9s & 0.0\% & 0/2 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{seeds}}
+    \label{tab_seeds_main}
+\end{table}
+
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 14.5s & 0.0\% & 5/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 0.3s & 0.0\% & 0/2 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 27.1s & 3.7\% & 0/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 1.2s & 0.0\% & 0/1 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 18.9s & 7.7\% & 0/1 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 3.7s & 0.0\% & 0/3 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{wine}}
+    \label{tab_wine_main}
+\end{table}
+
+\end{document}
