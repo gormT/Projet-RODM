@@ -1,4 +1,10 @@
+using Plots
+
+# using LinearAlgebra
+
 include("struct/distance.jl")
+include("utilities.jl")
+
 
 """
 Essaie de regrouper des données en commençant par celles qui sont les plus proches.
@@ -256,29 +262,33 @@ Sorties :
 - un tableau de Cluster constituant une partition de x
 """
 function dbscanMerge(x, y, minPts, eps)
-
     n = length(y)           # nb de classes
     m = length(x[1,:])      # nb d'attributs pour chaque donnée
     p = size(x, 1)          # nb de points dans x
 
     corePts = zeros(Int, p)     # tableau des core points, = 1 si core point, = 0 sinon
 
-    voisins = zeros(Int, p, p)
+    voisins = zeros(Int, p, p)  # voisins[i,j] = voisins[j,i] = 1 ssi i et j voisins
 
-    for pt in 1:p
-        nbVoisins = 0
-        for i in 1:p    # on parcours tous les points
+    for pt in 1:p   # on parcours tous les points
+        nbVoisins = 0   # on initialise le compteur de voisins
+        for i in pt+1:p    # on parcours tous les points tels que le couple (pt,i) n'ai pas été traité et on exclu les couples (pt,pt)
             dist = euclidean(x[i,:], x[pt,:])   # distance du point i au point pt
-            if dist <= eps
-                voisins[pt, i]
-                nbVoisins= nbVoisins + 1
+            if dist <= eps      # si distance inférieure à eps
+                voisins[pt, i] = 1      # pt et i sont voisins
+                voisins[i, pt] = 1      # et dans l'autre sens aussi
+                nbVoisins = nbVoisins + 1   # on incrémente le compteur de voisins
             end
         end
-        nbVoisins = nbVoisins-1     # pt est à une distance 0 de lui-même, il faut le retirer des voisins
-        if nbVoisins >= minPts
+        if nbVoisins >= minPts  # si pt a au moins minPts voisins, c'est un core point
             corePts[pt] = 1
         end
     end
+    println("core points : $corePts")
+    # println("matrice des voisins : $voisins")
+    
+    println("trace matrice des voisins : $(tr(voisins))")
+
 
     visited = zeros(Int, p)     # tableau des points visités, tout à zéro initialement
 
@@ -292,32 +302,60 @@ function dbscanMerge(x, y, minPts, eps)
     end
 
 
+    # Id du cluster de chaque donnée dans clusters
+    # (clusters[clusterId[i]] est le cluster contenant i)
+    # (clusterId[i] = i, initialement)
+    clusterId = collect(1:p)
 
     for i in 1:p        # pour tout point i
-        if visited[i] == 0 && corePts[i] != 0     # si i est un core point non visité
-            c0 = clusters[i]    # i sera le point initial du cluster courant
+        if visited[i] == 0 && corePts[i] == 1    # si i est un core point non visité
             visited[i] = 1      # on visite donc i
-            S = Vector{Int}([])     # S est l'ensemble des points qui seront dans le cluster à partir de i
-            for j in 1:p
-                if visited[j] == 0 && voisins[i,j] == 1
-                    push!(S, j)     # si j est un voisin de i, encore non visité, on l'ajoute à S
+            println("on visite le point $i : $(x[i,:])")
+            cId0 = clusterId[i]     # id du cluster contenant i
+            println("$i est dans le cluster $cId0")
+            c0 = clusters[cId0]    # i sera le point initial du cluster courant
+            println("c0.x : $(c0.x)")
+            println("c0.class : $(c0.class)")
+            S = Vector{Int}([])     # S est l'ensemble des points qui seront dans le cluster à partir de cId0
+            println("S = $S")
+            for j in 1:p    # on visite tous les autres points
+                if corePts[j] == 1 && visited[j] == 0 && voisins[i,j] == 1
+                    push!(S, j)     # si j est un core point voisin de i, encore non visité, on l'ajoute à S
+                    # S contient tous les core point voisins de i
+                    visited[j] = 1
                 end
             end
             while !isempty(S)       # on s'arrête lorsqu'il n'y a plus de voisins à visiter
                 t = popfirst!(S)    # on prend le (premier) point t dans S et on le retire de S
-                c1 = clusters[t]
-                visited[t] = 1      # on visite donc t
-                merge!(c0,c1)       # on fusionne les deux clusters
-                empty!(clusters[t].dataIds)     # on vide le second cluster
+                cId1 = clusterId[t]   # id du cluster contenant t
+                c1 = clusters[cId1]    # cluster contenant t
+                visited[t] = 1      # on visite donc t (normalement t a déjà été marqué comme visité mais bon...)
+                
+                # Si les deux données associées ne sont pas déjà dans le même cluster
+                if cId0 != cId1
+                    merge!(c0,c1)       # on fusionne les deux clusters
+                    for id in c1.dataIds
+                        clusterId[id]= cId0     # le cluster cId0 contient les points qui étaient dans c1
+                    end
+                    empty!(clusters[cId1].dataIds)     # on vide le second cluster
+                end
                 for l in 1:p
                     if visited[l] == 0 && voisins[t,l] == 1    # on parcourt les voisins non visités l de t
                         if corePts[l] == 1
                             push!(S, l)     # si l est un core point on l'ajoute à S
+                            visited[l] = 1
                         else
-                            c2 = clusters[l]
-                            visited[l]      # on visite l puisqu'on l'ajoute au cluster immédiatement sans l'ajouter à S
-                            merge!(c0,c2)   # on fusionne le cluster courant c0 avec le voisin l de t qui n'est pas un core point
-                            empty!(clusters[l].dataIds)     # on vide le second cluster
+                            cId2 = clusterId[l]
+                            c2 = clusters[cId2]
+                            visited[l] = 1     # on visite l puisqu'on l'ajoute au cluster immédiatement sans l'ajouter à S
+                            # Si les deux données associées ne sont pas déjà dans le même cluster
+                            if cId0 != cId2
+                                merge!(c0,c2)   # on fusionne le cluster courant c0 avec le voisin l de t qui n'est pas un core point
+                                for id in c2.dataIds
+                                    clusterId[id]= cId0     # le cluster cId0 contient les points qui étaient dans c2
+                                end
+                                empty!(clusters[cId2].dataIds)     # on vide le second cluster
+                            end
                         end
                     end
                 end
@@ -351,3 +389,54 @@ function cmbVoisins(x, pt, eps)
     end
     return nbVoisins-1  # pt est à une distance 0 de lui-même, il faut le retirer des voisins
 end
+
+
+
+"""
+Fonction de test de dbscanMerge
+Affiche le clustering
+
+"""
+function test(dataSetName; minPts = 10, eps = 0.12)
+    # Préparation des données
+    include("../data/" * dataSetName * ".txt") 
+    train, test = train_test_indexes(length(Y))
+    X_train = X[train,:]
+    Y_train = Y[train]
+    X_test = X[test,:]
+    Y_test = Y[test]
+
+    p = size(X_train, 1)
+    clusters = dbscanMerge(X_train, Y_train, minPts, eps)
+    nb_clusters = size(clusters, 1)
+
+    cluster_classes = zeros(Int, p)
+    class_nb = 1
+    for c in clusters
+        dataIds = c.dataIds
+        for id in dataIds
+            cluster_classes[id] = class_nb
+        end
+        class_nb = class_nb + 1
+    end
+    println("$nb_clusters clusters created")
+    
+    title_name = "prnn_eps=" * string(eps) * "_minPts=" * string(minPts)
+
+    scatter(X_train[:,1], X_train[:,2],
+            xlabel = "X",
+            ylabel = "Y",
+            title = title_name,
+            group = cluster_classes,
+            legend = false,
+            dpi = 1000)
+end
+
+
+
+test("prnn", minPts = 10, eps = 0.12)
+
+
+
+
+
