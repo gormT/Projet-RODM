@@ -1,6 +1,8 @@
 using Plots
 
-# using LinearAlgebra
+using LinearAlgebra
+
+using Clustering
 
 include("struct/distance.jl")
 include("utilities.jl")
@@ -433,10 +435,217 @@ function test(dataSetName; minPts = 10, eps = 0.12)
 end
 
 
+# x caractéristiques des données, y classe des données, k nombre de clusters voulus
+function KmeansMerge(x, y, k)
 
-test("prnn", minPts = 10, eps = 0.12)
+    # n = length(y)
+    # m = length(x[1,:])
+    n, m = size(x)[1], size(x)[2]
+    
+    clusters = Vector{Cluster}([])
+
+    # On prend k centroides initiaux aléatoires parmi les données
+    new_centroides = []
+    possible_centroids = Vector(1:n)
+
+    for i in 1:k
+        if length(possible_centroids) == 0
+            break
+        end
+        rand_index = rand(1:length(possible_centroids))
+        push!(new_centroides, rand_index)
+        deleteat!(possible_centroids, rand_index)
+    end
 
 
+    centroides = Vector([0 for i in 1:length(new_centroides)])
+
+    # L'algorithme kmean se termine lorsque toutes les données sont partitionnés de manière stable, ie qu'ils ne changent plus de cluster 
+    while new_centroides != centroides
+        
+        # Les anciens centroides deviennent ceux de l'itération précédente
+        centroides = new_centroides
+
+        clusters = Vector{Cluster}([])
+
+        # Au début, créée un cluster par élément
+        for data in 1:n
+            push!(clusters, Cluster(data, x, y))
+        end
+
+        clusterId = Vector(1:n)
+        
+        # On associe les données au centroide le plus proche  
+        for elem in 1:n
+
+            distances = Vector{Distance}([])
+
+            # On calcule toutes les distances entre cet élement et les centroides
+            for centr in centroides
+                # if y[elem] == y[centr]
+                #     push!(distances, Distance(elem, centr, x))
+                # end
+                push!(distances, Distance(elem, centr, x))
+            end
+
+            # On garde le plus proche centroide
+            sort!(distances, by = v -> v.distance)
+            distance = distances[1]
+            cId1 = clusterId[distance.ids[1]]
+            cId2 = clusterId[distance.ids[2]]
+
+            # Si les deux données associées ne sont pas déjà dans le même cluster
+            if cId1 != cId2
+                
+
+                # Fusionner leurs clusters 
+                c1 = clusters[cId1]
+                c2 = clusters[cId2]
+                merge!(c1, c2)
+                for id in c2.dataIds
+                    clusterId[id]= cId1
+                end
+
+                # Vider le second cluster
+                empty!(clusters[cId2].dataIds)
+            end
+        end
+        #liste des nouveaux centroides
+        new_centroides=[]
+        
+        for id1 in centroides
+            cid=clusterId[id1]
+            c=clusters[cid]
+            xmoy=[0.0 for i in 1:m]
+
+            
+            for id in c.dataIds
+                for i in 1:m
+                    xmoy[i]+= (x[id, i] / length(c.dataIds))
+                end
+
+            end
+            min=euclidean(x[1, :], xmoy)
+            newid=1
+            for id2 in 1:n
+                if min > euclidean(x[id2, :], xmoy)
+                    min = euclidean(x[id2, :], xmoy)
+                    newid=id2
+                end
+            end
+            append!(new_centroides,newid)
+        end
+        sort!(new_centroides)
+    end
+
+    # Retourner tous les clusters non vides
+    return filter(x -> length(x.dataIds) > 0, clusters)
+end 
 
 
+function test_kmean(dataSetName; k=3)
+    # Préparation des données
+    include("../data/" * dataSetName * ".txt") 
+    train, test = train_test_indexes(length(Y))
+    X_train = X[train,:]
+    Y_train = Y[train]
+    X_test = X[test,:]
+    Y_test = Y[test]
 
+    p = size(X_train, 1)
+    clusters = KmeansMerge(X_train, Y_train, k)
+    nb_clusters = size(clusters, 1)
+
+    cluster_classes = zeros(Int, p)
+    class_nb = 1
+    for c in clusters
+        dataIds = c.dataIds
+        for id in dataIds
+            cluster_classes[id] = class_nb
+        end
+        class_nb = class_nb + 1
+    end
+    println("$nb_clusters clusters created")
+    
+    title_name = "k=" * string(k)
+
+    scatter(X_train[:,1], X_train[:,2],
+            xlabel = "X",
+            ylabel = "Y",
+            title = title_name,
+            group = cluster_classes,
+            legend = false,
+            dpi = 1000)
+end
+
+
+function kmeans_julia(x, k)
+
+    n, m = size(x)[1], size(x)[2]
+
+    C = kmeans(transpose(x), k)
+
+    y_algo = assignments(C)
+
+    clusters = Vector{Cluster}([])
+
+    for dataId in 1:size(x, 1)
+        push!(clusters, Cluster(y_algo[dataId], x, y_algo))
+    end
+
+
+    for i in 1:k
+        for c1 in clusters
+            for c2 in clusters
+                if c1.class == c2.class
+                    merge!(c1, c2)
+                end
+            end
+        end
+    end
+
+
+    # Retourner tous les clusters non vides
+    return filter(x -> length(x.dataIds) > 0, clusters)
+end
+
+function test_kmean_julia(dataSetName, k)
+    # Préparation des données
+    include("../data/" * dataSetName * ".txt") 
+    train, test = train_test_indexes(length(Y))
+    X_train = X[train,:]
+    Y_train = Y[train]
+    X_test = X[test,:]
+    Y_test = Y[test]
+
+    p = size(X_train, 1)
+    clusters = kmeans_julia(X_train, k)
+    nb_clusters = size(clusters, 1)
+
+    cluster_classes = zeros(Int, p)
+    class_nb = 1
+    for c in clusters
+        dataIds = c.dataIds
+        for id in dataIds
+            cluster_classes[id] = class_nb
+        end
+        class_nb = class_nb + 1
+    end
+    println("$nb_clusters clusters created")
+    
+    title_name = "k=" * string(k)
+
+    scatter(X_train[:,1], X_train[:,2],
+            xlabel = "X",
+            ylabel = "Y",
+            title = title_name,
+            group = cluster_classes,
+            legend = false,
+            dpi = 1000)
+end
+
+
+# test_kmean("iris", k=4)
+# test_kmean_julia("prnn", k=2)
+
+# test("prnn", minPts = 10, eps = 0.12)

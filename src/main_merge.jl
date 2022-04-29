@@ -2,6 +2,7 @@ include("building_tree.jl")
 include("utilities.jl")
 include("merge.jl")
 
+
 function main_merge()
     for dataSetName in ["iris", "seeds", "wine", "ecoli", "prnn"]
         
@@ -23,9 +24,9 @@ function main_merge()
         for D in 2:4
             println("\tD = ", D)
             println("\t\tUnivarié")
-            testMerge2(X_train, Y_train, X_test, Y_test, D, time_limit = time_limit, isMultivariate = false)
+            testMergeKmean(X_train, Y_train, X_test, Y_test, D, time_limit = time_limit, isMultivariate = false)
             println("\t\tMultivarié")
-            testMerge2(X_train, Y_train, X_test, Y_test, D, time_limit = time_limit, isMultivariate = true)
+            testMergeKmean(X_train, Y_train, X_test, Y_test, D, time_limit = time_limit, isMultivariate = true)
         end
     end
 end 
@@ -64,4 +65,47 @@ function testMerge2(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1, isM
     end
     println() 
 end 
+
+
+
+function testMergeKmean(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1, isMultivariate::Bool = false)
+
+    println("\t\t\teps\t\t# clusters\tGap")
+    for k in 20:20
+        print("\t\t\t", eps, "\t\t")
+        clusters = KmeansMerge(X_train, Y_train, k)
+        print(length(clusters), " clusters\t")
+        T, obj, resolution_time, gap = build_tree(clusters, D, multivariate = isMultivariate, time_limit = time_limit)
+        print(round(gap, digits = 1), "%\t") 
+        print("Erreurs train/test : ", prediction_errors(T,X_train,Y_train))
+        print("/", prediction_errors(T,X_test,Y_test), "\t")
+        println(round(resolution_time, digits=1), "s")
+    end
+    println() 
+end 
+
+
+main_merge()
+
+# function calculate_WSS(X, kmax)
+
+#     sse = []
+#     for k in 1:kmax + 1
+#         R = kmeans(transpose(X), k)
+#         centroids = R.centers
+#         a = assignments(R) #ssignement of each point to which cluster
+
+#         curr_sse = 0
+#         # calculate square of Euclidean distance of each point from its cluster center and add to current WSS
+#         for i in 1:size(X)[2]
+#             curr_center = centroids[a[i]]
+
+#             curr_sse += euclidean(X[i], curr_center)
+
+#             push!(sse, curr_sse)
+#         end
+#     end
+#     return sse
+# end
+
 
