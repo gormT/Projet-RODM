@@ -6,6 +6,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{url}
 \usepackage{multirow}
+\usepackage{float}
 
 \usepackage{enumerate}
 
@@ -16,7 +17,7 @@
 \begin{document}
 \maketitle
 
-\textbf{1. Jeux de données}
+\section{Jeux de données}
 
 \begin{itemize}
     \item \texttt{ecoli.txt} : 7 attributs par instance, 327 instances, 5 classes. La classe regroupant le nombre minimal d'instances en possède 20, le choix a été fait de supprimer les instances étant dans des classes de petites tailles ($\leq$ 5 instances par classe).
@@ -27,13 +28,13 @@ Ces deux jeux de données proviennent du site \url{www.openml.org}.
 
 \vspace{2mm}
 
-\textbf{2. Résultats : \texttt{main()}}
+\section{Résultats : \texttt{main()}}
 
 La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur les 5 jeux de données considérés sont les suivantes :
 
 
 
-\begin{table}[!ht]
+\begin{table}[H]
     \centering
     \begin{tabular}{| c | c | c | c | c |}
     \hline
@@ -57,7 +58,7 @@ La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur 
 \end{table}
 
 
-\begin{table}[!ht]
+\begin{table}[H]
     \centering
     \begin{tabular}{| c | c | c | c | c |}
     \hline
@@ -81,7 +82,7 @@ La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur 
 \end{table}
 
 
-\begin{table}[!ht]
+\begin{table}[H]
     \centering
     \begin{tabular}{| c | c | c | c | c |}
     \hline
@@ -103,5 +104,10 @@ La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur 
     \caption{Résultats jeu de données \texttt{wine}}
     \label{tab_wine_main}
 \end{table}
+
+
+\section{Question d'ouverture}
+
+Nous avons décidé de tester d'autres méthode de clustering pour les comparer aux méthodes déjà implémentées; nous avons implémenter les méthodes classiques DBscan et Kmean, bien documentées sur internet.
 
 \end{document}
