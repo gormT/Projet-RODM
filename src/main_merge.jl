@@ -5,6 +5,7 @@ include("merge.jl")
 
 function main_merge()
     for dataSetName in ["iris", "seeds", "wine", "ecoli", "prnn"]
+    # for dataSetName in ["prnn"]
         
         print("=== Dataset ", dataSetName)
         
@@ -50,10 +51,11 @@ end
 
 function testMerge2(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1, isMultivariate::Bool = false)
 
-    minPts = 4  # nombre de voisins minimum pour qu'une région soit considérée comme "dense"
+    minPts = 10  # nombre de voisins minimum pour qu'une région soit considérée comme "dense"
     # Pour tout pourcentage de regroupement considéré
     println("\t\t\teps\t\t# clusters\tGap")
-    for eps in 0:0.2:0.8
+    for eps in 0.05:0.01:0.1
+    # for eps in 0.14:0.02:0.20
         print("\t\t\t", eps, "\t\t")
         clusters = dbscanMerge(X_train, Y_train, minPts, eps)
         print(length(clusters), " clusters\t")
@@ -83,8 +85,3 @@ function testMergeKmean(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1,
     end
     println() 
 end 
-
-
-# main_merge()
-
-

@@ -1,4 +1,5 @@
 using Plots
+using Clustering
 
 using LinearAlgebra
 
@@ -286,11 +287,6 @@ function dbscanMerge(x, y, minPts, eps)
             corePts[pt] = 1
         end
     end
-    println("core points : $corePts")
-    # println("matrice des voisins : $voisins")
-    
-    println("trace matrice des voisins : $(tr(voisins))")
-
 
     visited = zeros(Int, p)     # tableau des points visités, tout à zéro initialement
 
@@ -312,14 +308,9 @@ function dbscanMerge(x, y, minPts, eps)
     for i in 1:p        # pour tout point i
         if visited[i] == 0 && corePts[i] == 1    # si i est un core point non visité
             visited[i] = 1      # on visite donc i
-            println("on visite le point $i : $(x[i,:])")
             cId0 = clusterId[i]     # id du cluster contenant i
-            println("$i est dans le cluster $cId0")
             c0 = clusters[cId0]    # i sera le point initial du cluster courant
-            println("c0.x : $(c0.x)")
-            println("c0.class : $(c0.class)")
             S = Vector{Int}([])     # S est l'ensemble des points qui seront dans le cluster à partir de cId0
-            println("S = $S")
             for j in 1:p    # on visite tous les autres points
                 if corePts[j] == 1 && visited[j] == 0 && voisins[i,j] == 1
                     push!(S, j)     # si j est un core point voisin de i, encore non visité, on l'ajoute à S
@@ -643,9 +634,3 @@ function test_kmean_julia(dataSetName, k)
             legend = false,
             dpi = 1000)
 end
-
-
-# test_kmean("iris", k=4)
-# test_kmean_julia("prnn", k=2)
-
-# test("prnn", minPts = 10, eps = 0.12)
