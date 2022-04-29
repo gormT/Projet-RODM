@@ -1,0 +1,161 @@
+\documentclass{article}
+
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{float}
+
+\usepackage{enumerate}
+
+\title{Rapport de RODD\\ TP n°6}
+
+\author{}
+
+\begin{document}
+\maketitle
+
+\section{Jeux de données}
+
+\begin{itemize}
+    \item \texttt{ecoli.txt} : 7 attributs par instance, 327 instances, 5 classes. La classe regroupant le nombre minimal d'instances en possède 20, le choix a été fait de supprimer les instances étant dans des classes de petites tailles ($\leq$ 5 instances par classe).
+    \item \texttt{prnn.txt} : 2 attributs par instance, 250 instances, 2 classes. Autant d'instances dans chaque classe (125).
+\end{itemize}
+
+Ces deux jeux de données proviennent du site \url{www.openml.org}.
+
+\vspace{2mm}
+
+\section{Résultats : \texttt{main()}}
+
+La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur les 5 jeux de données considérés sont les suivantes :
+
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 1.3s & 0.0\% & 5/1 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 0.9s & 0.0\% & 1/0 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 8.0s & 0.0\% & 0/4 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 0.8s & 0.0\% & 0/2 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 10.5s & 0.0\% & 0/4 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 4.2s & 0.0\% & 0/1 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{iris} (train size 120, test size 30, features count: 4)}
+    \label{tab_iris_main}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 12.4s & 0.0\% & 10/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 1.4s & 0.0\% & 0/2 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 30.2s & 3.7\% & 6/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 3.2s & 0.0\% & 0/1 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 30.5s & 7.7\% & 11/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 18.9s & 0.0\% & 0/2 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{seeds}}
+    \label{tab_seeds_main}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 14.5s & 0.0\% & 5/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 0.3s & 0.0\% & 0/2 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 27.1s & 3.7\% & 0/2 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 1.2s & 0.0\% & 0/1 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 18.9s & 7.7\% & 0/1 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 3.7s & 0.0\% & 0/3 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{wine}}
+    \label{tab_wine_main}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 30.1s & 6.6\% & 42/15 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.1s & 5.6\% & 33/15 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 30.4s & 28.6\% & 58/20 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.3s & 7.0\% & 16/13 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 31.1s & 54.4\% & 83/26 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 31.1s & 137.7\% & 151/33 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{ecoli}}
+    \label{tab_ecoli_main}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 30.1s & 7.4\% & 24/12 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.1s & 10.5\% & 19/7 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 30.3s & 10.5\% & 19/11 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.5s & 13.0\% & 22/5 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 30.7s & 11.1\% & 20/12 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.6s & 22.7\% & 35/6 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{prnn}}
+    \label{tab_prnn_main}
+\end{table}
+
+On remarque que le merge simple permet d'obtenir des bons résultats (un gap faible) en un temps réduit pour des petites instances notamment dans le cas d'une séparation multivarié et avec des faibles erreurs. Néanmoins ceci n'est plus le cas pour des données avec des tailles plus importants comme "ecoli" et "prnn" ou on observe un temps d'éxecution plus important un gap plus important en comparant par rapport aux instances "iris", "seeds" et "wine". Aussi pour des données avec une taille plus grande et plus de features (le cas d'"ecoli et "prnn") on observe plus d'erreurs dans les résultats.\\
+Afin d'essayer d'améliorer les résultats obtenus on a essayé d'implémenter et comparer les résultats obtenues pour deux méthodes de clustering.
+
+\section{Question d'ouverture}
+
+Nous avons décidé de tester d'autres méthode de clustering pour les comparer aux méthodes déjà implémentées; nous avons implémenter les méthodes classiques DBscan et Kmean, bien documentées sur internet.
+
+\end{document}
