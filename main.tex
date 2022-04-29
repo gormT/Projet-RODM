@@ -105,6 +105,54 @@ La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur 
     \label{tab_wine_main}
 \end{table}
 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 30.1s & 6.6\% & 42/15 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.1s & 5.6\% & 33/15 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 30.4s & 28.6\% & 58/20 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.3s & 7.0\% & 16/13 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 31.1s & 54.4\% & 83/26 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 31.1s & 137.7\% & 151/33 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{ecoli}}
+    \label{tab_ecoli_main}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+    \hline
+    ~ & Séparation & Temps (s) & gap  & Erreurs train/test\\
+    \hline
+    \multirow{2}{*}{D = 2} & \text{Univarié} & 30.1s & 7.4\% & 24/12 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.1s & 10.5\% & 19/7 \\
+    \hline
+    \multirow{2}{*}{D = 3} & \text{Univarié} & 30.3s & 10.5\% & 19/11 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.5s & 13.0\% & 22/5 \\
+    \hline
+    \multirow{2}{*}{D = 4} & \text{Univarié} & 30.7s & 11.1\% & 20/12 \\
+    \cline{2-5}
+    ~ & \text{Multivarié} & 30.6s & 22.7\% & 35/6 \\
+    \hline
+    \end{tabular}
+    \caption{Résultats jeu de données \texttt{prnn}}
+    \label{tab_prnn_main}
+\end{table}
+
+On remarque que le merge simple permet d'obtenir des bons résultats (un gap faible) en un temps réduit pour des petites instances notamment dans le cas d'une séparation multivarié et avec des faibles erreurs. Néanmoins ceci n'est plus le cas pour des données avec des tailles plus importants comme "ecoli" et "prnn" ou on observe un temps d'éxecution plus important un gap plus important en comparant par rapport aux instances "iris", "seeds" et "wine". Aussi pour des données avec une taille plus grande et plus de features (le cas d'"ecoli et "prnn") on observe plus d'erreurs dans les résultats.\\
+Afin d'essayer d'améliorer les résultats obtenus on a essayé d'implémenter et comparer les résultats obtenues pour deux méthodes de clustering.
 
 \section{Question d'ouverture}
 
