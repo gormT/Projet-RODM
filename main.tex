@@ -108,6 +108,59 @@ La fonction \texttt{main()} n'utilise pas de regroupement, les performances sur 
 
 \section{Question d'ouverture}
 
-Nous avons décidé de tester d'autres méthode de clustering pour les comparer aux méthodes déjà implémentées; nous avons implémenter les méthodes classiques DBscan et Kmean, bien documentées sur internet.
+Nous avons décidé de tester d'autres méthode de clustering pour les comparer aux méthodes déjà implémentées; nous avons implémenter les méthodes classiques DBscan et Kmean, bien documentées sur internet.\\
+
+
+
+
+\textbf{Avec l'algorithme KMean}. Nous avons implémenté l'algorithme en initialisant les $k$ premiers centroïdes avec $k$ données prises au hasard. Pour chacun des tests suivants, nous avons fait tourné l'algorithme avec $k$ variant de $3$ à $30$; nous n'affichons que le meilleur résultat ainsi que sa valeur du paramètre $k$ correspondante.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{| c | c | c | c | c | c |}
+		\hline
+		~ & Séparation & Temps (s) & $k$ meilleur résultat & gap  & Erreurs train/test\\
+		\hline
+		\multirow{2}{*}{D = 2} & \text{Univarié} & 0.4 & 24 & 0.0\% & 5/1 \\
+		\cline{2-6}
+		~ & \text{Multivarié} & 0.3s & 26 & 0.0\% & 3/1 \\
+		\hline
+		\multirow{2}{*}{D = 3} & \text{Univarié} & 1.4s & 23 & 0.0\% & 4/1 \\
+		\cline{2-6}
+		~ & \text{Multivarié} & 0.2s & 20 & 0.0\% & 2/1 \\
+		\hline
+		\multirow{2}{*}{D = 4} & \text{Univarié} & 6.3s & 19 & 0.0\% & 3/1 \\
+		\cline{2-6}
+		~ & \text{Multivarié} & 0.5s & 25 & 0.0\% & 3/1 \\
+		\hline
+	\end{tabular}
+	\caption{Résultats pour KMean sur le jeu de données \texttt{iris}}
+	\label{tab_iris_kmean}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{| c | c | c | c | c | c |}
+		\hline
+		~ & Séparation & Temps (s) & $k$ meilleur résultat & gap  & Erreurs train/test\\
+		\hline
+		\multirow{2}{*}{D = 2} & \text{Univarié} & 1.5 & 43 & 0.0\% & 15/4 \\
+		\cline{2-6}
+		~ & \text{Multivarié} & 0.1s & 39 & 0.0\% & 10/3 \\
+		\hline
+		\multirow{2}{*}{D = 3} & \text{Univarié} & 9.2s & 35 & 0.0\% & 13/4 \\
+		\cline{2-6}
+		~ & \text{Multivarié} & 1.3s & 35 & 0.0\% & 8/4 \\
+		\hline
+		\multirow{2}{*}{D = 4} & \text{Univarié} & 10.1s & 39 & 10.5\% & 12/5 \\
+		\cline{2-6}
+		~ & \text{Multivarié} & 1.2s & 40 & 0.0\% & 7/3 \\
+		\hline
+	\end{tabular}
+	\caption{Résultats pour KMean sur le jeu de données \texttt{seeds} - $k$ varie de 3 à 50 pour de meilleurs résultats}
+	\label{tab_seeds_kmean}
+\end{table}
+
+L'algorithme Kmean que nous avons codé ne prend pas en compte les classes d'entraînement stockées dans le vecteur $y$. Cela se constate clairement en ce que les résultats sont globalement moins bons que l'approche naïve avec entraînement. Le nombre d'erreurs supplémentaire est néanmoins borné par une constante raisonnable dans nos essais -- il n'est jamais plus grand que $50\%$ de la valeur calculée par l'algorithme naïf. On testant l'algorithme dans la bonne plage de valeurs de $k$, on s'assure donc un résultat de qualité raisonnable en un temps de calcule bien plus court, avec un gap quasi systématiquement égal à 0.
 
 \end{document}

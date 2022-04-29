@@ -4,7 +4,8 @@ include("merge.jl")
 
 
 function main_merge()
-    for dataSetName in ["iris", "seeds", "wine", "ecoli", "prnn"]
+    # for dataSetName in ["iris", "seeds", "wine", "ecoli", "prnn"]
+    for dataSetName in ["seeds"]
         
         print("=== Dataset ", dataSetName)
         
@@ -70,9 +71,9 @@ end
 
 function testMergeKmean(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1, isMultivariate::Bool = false)
 
-    println("\t\t\teps\t\t# clusters\tGap")
-    for k in 20:20
-        print("\t\t\t", eps, "\t\t")
+    println("\t\t\tk\t\t# clusters\tGap")
+    for k in 30:50
+        print("\t\t\t", k, "\t\t")
         clusters = KmeansMerge(X_train, Y_train, k)
         print(length(clusters), " clusters\t")
         T, obj, resolution_time, gap = build_tree(clusters, D, multivariate = isMultivariate, time_limit = time_limit)
