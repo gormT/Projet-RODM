@@ -4,8 +4,7 @@ include("merge.jl")
 
 
 function main_merge()
-    # for dataSetName in ["iris", "seeds", "wine", "ecoli", "prnn"]
-    for dataSetName in ["seeds"]
+    for dataSetName in ["iris", "seeds", "wine", "ecoli", "prnn"]
         
         print("=== Dataset ", dataSetName)
         
@@ -68,11 +67,11 @@ function testMerge2(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1, isM
 end 
 
 
-
+# Pour tester l'algorithme Kmean sur tout une plage de valeurs pour k
 function testMergeKmean(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1, isMultivariate::Bool = false)
 
     println("\t\t\tk\t\t# clusters\tGap")
-    for k in 30:50
+    for k in 3:30
         print("\t\t\t", k, "\t\t")
         clusters = KmeansMerge(X_train, Y_train, k)
         print(length(clusters), " clusters\t")
@@ -86,27 +85,6 @@ function testMergeKmean(X_train, Y_train, X_test, Y_test, D; time_limit::Int=-1,
 end 
 
 
-main_merge()
-
-# function calculate_WSS(X, kmax)
-
-#     sse = []
-#     for k in 1:kmax + 1
-#         R = kmeans(transpose(X), k)
-#         centroids = R.centers
-#         a = assignments(R) #ssignement of each point to which cluster
-
-#         curr_sse = 0
-#         # calculate square of Euclidean distance of each point from its cluster center and add to current WSS
-#         for i in 1:size(X)[2]
-#             curr_center = centroids[a[i]]
-
-#             curr_sse += euclidean(X[i], curr_center)
-
-#             push!(sse, curr_sse)
-#         end
-#     end
-#     return sse
-# end
+# main_merge()
 
 
